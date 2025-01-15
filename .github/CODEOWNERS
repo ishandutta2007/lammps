@@ -101,7 +101,8 @@ src/group.*               @sjplimp
 src/improper.*            @sjplimp
 src/info.*                @akohlmey
 src/kspace.*              @sjplimp
-src/lmptyp.h              @sjplimp
+src/lmptype.h             @sjplimp
+src/label_map.*           @jrgissing @akohlmey
 src/library.*             @sjplimp @akohlmey
 src/main.cpp              @sjplimp
 src/min_*.*               @sjplimp

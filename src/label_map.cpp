@@ -33,7 +33,7 @@ static const char cite_type_label_framework[] =
     " year =    2024,\n"
     " volume =  128,\n"
     " number =  13,\n"
-    " pages =   {3282–-3297}\n"
+    " pages =   {3282--3297}\n"
     "}\n\n";
 
 /* ---------------------------------------------------------------------- */
@@ -43,8 +43,6 @@ LabelMap::LabelMap(LAMMPS *_lmp, int _natomtypes, int _nbondtypes, int _nanglety
     Pointers(_lmp), natomtypes(_natomtypes), nbondtypes(_nbondtypes), nangletypes(_nangletypes),
     ndihedraltypes(_ndihedraltypes), nimpropertypes(_nimpropertypes)
 {
-  if (lmp->citeme) lmp->citeme->add(cite_type_label_framework);
-
   lmap2lmap.atom = lmap2lmap.bond = lmap2lmap.angle = lmap2lmap.dihedral = lmap2lmap.improper =
       nullptr;
   reset_type_labels();
@@ -111,6 +109,8 @@ void LabelMap::modify_lmap(int narg, char **arg)
 {
   if ((narg < 1) || ((narg > 2) && ((narg % 2) == 0)))
     error->all(FLERR, "Incorrect number of arguments for labelmap command");
+
+  if (lmp->citeme) lmp->citeme->add(cite_type_label_framework);
 
   int ntypes;
   std::vector<std::string> *labels;
@@ -237,6 +237,8 @@ int LabelMap::find_or_create(const std::string &mylabel, std::vector<std::string
 {
   auto search = labels_map.find(mylabel);
   if (search != labels_map.end()) return search->second;
+
+  if (lmp->citeme) lmp->citeme->add(cite_type_label_framework);
 
   // if no match found, create new label at next available index
   // label map assumed to be intialized with numeric index

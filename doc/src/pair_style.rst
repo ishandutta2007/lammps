@@ -151,6 +151,7 @@ accelerated styles exist.
 * :doc:`comb <pair_comb>` - charge-optimized many-body (COMB) potential
 * :doc:`comb3 <pair_comb>` - charge-optimized many-body (COMB3) potential
 * :doc:`cosine/squared <pair_cosine_squared>` - Cooke-Kremer-Deserno membrane model potential
+* :doc:`coul/ctip <pair_coul>` - Charge Transfer Interatomic (Coulomb) Potential
 * :doc:`coul/cut <pair_coul>` - cutoff Coulomb potential
 * :doc:`coul/cut/dielectric <pair_dielectric>` -
 * :doc:`coul/cut/global <pair_coul>` - cutoff Coulomb potential
@@ -171,6 +172,7 @@ accelerated styles exist.
 * :doc:`coul/tt <pair_coul_tt>` - damped charge-dipole Coulomb for Drude dipoles
 * :doc:`coul/wolf <pair_coul>` - Coulomb via Wolf potential
 * :doc:`coul/wolf/cs <pair_cs>` - Coulomb via Wolf potential with core/shell adjustments
+* :doc:`dispersion/d3 <pair_dispersion_d3>` - Dispersion correction for potentials derived from DFT functionals
 * :doc:`dpd <pair_dpd>` - dissipative particle dynamics (DPD)
 * :doc:`dpd/coul/slater/long <pair_dpd_coul_slater_long>` - dissipative particle dynamics (DPD) with electrostatic interactions
 * :doc:`dpd/ext <pair_dpd_ext>` - generalized force field for DPD

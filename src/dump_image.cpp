@@ -1097,7 +1097,7 @@ void DumpImage::create_image()
         color = colortype[itype];
       }
 
-      ibonus = body[i];
+      ibonus = body[j];
       n = bptr->image(ibonus,bodyflag1,bodyflag2,bodyvec,bodyarray);
       for (k = 0; k < n; k++) {
         if (bodyvec[k] == SPHERE)

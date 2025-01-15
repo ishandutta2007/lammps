@@ -106,6 +106,7 @@ extern void   lammps_mpi_finalize();
 extern void   lammps_kokkos_finalize();
 extern void   lammps_python_finalize();
 extern void   lammps_error(void *handle, int error_type, const char *error_text);
+extern char  *lammps_expand(void *handle, const char *line);
 
 extern void   lammps_file(void *handle, const char *file);
 extern char  *lammps_command(void *handle, const char *cmd);
@@ -140,6 +141,8 @@ extern int    lammps_extract_variable_datatype(void *handle, const char *name);
 extern int    lammps_set_variable(void *, const char *, const char *);
 extern int    lammps_set_string_variable(void *, const char *, const char *);
 extern int    lammps_set_internal_variable(void *, const char *, double);
+extern int    lammps_variable_info(void *handle, int idx, char *buf, int bufsize);
+extern double lammps_eval(void *handle, const char *expr);
 
 extern void   lammps_gather_atoms(void *, char *, int, int, void *);
 extern void   lammps_gather_atoms_concat(void *, char *, int, int, void *);
@@ -296,6 +299,7 @@ extern void   lammps_mpi_finalize();
 extern void   lammps_kokkos_finalize();
 extern void   lammps_python_finalize();
 extern void   lammps_error(void *handle, int error_type, const char *error_text);
+extern char  *lammps_expand(void *handle, const char *line);
 
 extern void   lammps_file(void *handle, const char *file);
 extern char  *lammps_command(void *handle, const char *cmd);
@@ -330,6 +334,8 @@ extern int    lammps_extract_variable_datatype(void *handle, const char *name);
 extern int    lammps_set_variable(void *, const char *, const char *);
 extern int    lammps_set_string_variable(void *, const char *, const char *);
 extern int    lammps_set_internal_variable(void *, const char *, double);
+extern int    lammps_variable_info(void *handle, int idx, char *buf, int bufsize);
+extern double lammps_eval(void *handle, const char *expr);
 
 extern void   lammps_gather_atoms(void *, char *, int, int, void *);
 extern void   lammps_gather_atoms_concat(void *, char *, int, int, void *);

@@ -77,7 +77,7 @@ version 23 November 2023 and Kokkos version 4.2.
    rank.  When running with multiple MPI ranks, you may see segmentation
    faults without GPU-aware MPI support. These can be avoided by adding
    the flags :doc:`-pk kokkos gpu/aware off <Run_options>` to the
-   LAMMPS command line or by using the command :doc:`package kokkos
+   LAMMPS command-line or by using the command :doc:`package kokkos
    gpu/aware off <package>` in the input file.
 
 .. admonition:: Intel Data Center GPU support
@@ -423,7 +423,7 @@ in the ``kokkos-cuda.cmake`` CMake preset file.
    cmake -DKokkos_ENABLE_CUDA=yes -DKokkos_ENABLE_OPENMP=yes ../cmake
 
 The suffix "/kk" is equivalent to "/kk/device", and for Kokkos CUDA,
-using the ``-sf kk`` in the command line gives the default CUDA version
+using the ``-sf kk`` in the command-line gives the default CUDA version
 everywhere.  However, if the "/kk/host" suffix is added to a specific
 style in the input script, the Kokkos OpenMP (CPU) version of that
 specific style will be used instead.  Set the number of OpenMP threads
@@ -439,7 +439,7 @@ For example, the command to run with 1 GPU and 8 OpenMP threads is then:
 
    mpiexec -np 1 lmp_kokkos_cuda_openmpi -in in.lj -k on g 1 t 8 -sf kk
 
-Conversely, if the ``-sf kk/host`` is used in the command line and then
+Conversely, if the ``-sf kk/host`` is used in the command-line and then
 the "/kk" or "/kk/device" suffix is added to a specific style in your
 input script, then only that specific style will run on the GPU while
 everything else will run on the CPU in OpenMP mode. Note that the
@@ -451,7 +451,7 @@ on the host CPU can overlap with a pair style running on the
 GPU. First compile with ``--default-stream per-thread`` added to ``CCFLAGS``
 in the Kokkos CUDA Makefile.  Then explicitly use the "/kk/host"
 suffix for kspace and bonds, angles, etc.  in the input file and the
-"kk" suffix (equal to "kk/device") on the command line.  Also make
+"kk" suffix (equal to "kk/device") on the command-line.  Also make
 sure the environment variable ``CUDA_LAUNCH_BLOCKING`` is not set to "1"
 so CPU/GPU overlap can occur.
 

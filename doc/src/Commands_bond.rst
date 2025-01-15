@@ -90,6 +90,7 @@ OPT.
    * :doc:`lepton (o) <angle_lepton>`
    * :doc:`mesocnt <angle_mesocnt>`
    * :doc:`mm3 <angle_mm3>`
+   * :doc:`mwlc <angle_mwlc>`
    * :doc:`quartic (o) <angle_quartic>`
    * :doc:`spica (ko) <angle_spica>`
    * :doc:`table (o) <angle_table>`

@@ -97,6 +97,9 @@ void ComputeRHEOInterface::init()
   auto fixes = modify->get_fix_by_style("rheo/pressure");
   fix_pressure = dynamic_cast<FixRHEOPressure *>(fixes[0]);
 
+  if (!fix_pressure->invertible_pressure)
+    error->all(FLERR, "RHEO interface reconstruction incompatible with pressure equation of state");
+
   neighbor->add_request(this, NeighConst::REQ_DEFAULT);
 }
 
@@ -178,7 +181,7 @@ void ComputeRHEOInterface::compute_peratom()
             dot = 0;
             for (a = 0; a < 3; a++) dot += (-fp_store[j][a] + fp_store[i][a]) * dx[a];
 
-            rho[i] += w * (fix_pressure->calc_pressure(rho[j], jtype) - rho[j] * dot);
+            rho[i] += w * (fix_pressure->calc_pressure(rho[j], j) - rho[j] * dot);
             normwf[i] += w;
           }
         }
@@ -192,7 +195,7 @@ void ComputeRHEOInterface::compute_peratom()
               dot = 0;
               for (a = 0; a < 3; a++) dot += (-fp_store[i][a] + fp_store[j][a]) * dx[a];
 
-              rho[j] += w * (fix_pressure->calc_pressure(rho[i], itype) + rho[i] * dot);
+              rho[j] += w * (fix_pressure->calc_pressure(rho[i], i) + rho[i] * dot);
               normwf[j] += w;
             }
           }
@@ -210,7 +213,7 @@ void ComputeRHEOInterface::compute_peratom()
     if (status[i] & PHASECHECK) {
       if (normwf[i] != 0.0) {
         // Stores rho for solid particles 1+Pw in Adami Adams 2012
-        rho[i] = MAX(EPSILON, fix_pressure->calc_rho(rho[i] / normwf[i], type[i]));
+        rho[i] = MAX(EPSILON, fix_pressure->calc_rho(rho[i] / normwf[i], i));
       } else {
         rho[i] = rho0[itype];
       }
@@ -218,8 +221,7 @@ void ComputeRHEOInterface::compute_peratom()
   }
 
   comm_stage = 1;
-  comm_forward = 2;
-  comm->forward_comm(this);
+  comm->forward_comm(this, 2);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -369,9 +371,8 @@ void ComputeRHEOInterface::store_forces()
   }
 
   // Forward comm forces
-  comm_forward = 3;
   comm_stage = 0;
-  comm->forward_comm(this);
+  comm->forward_comm(this, 3);
 }
 
 /* ----------------------------------------------------------------------

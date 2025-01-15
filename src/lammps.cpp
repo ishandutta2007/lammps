@@ -105,7 +105,7 @@ using namespace LAMMPS_NS;
  *
  * The LAMMPS class manages the components of an MD simulation by creating,
  * deleting, and initializing instances of the classes it is composed of,
- * processing command line flags, and providing access to some global properties.
+ * processing command-line flags, and providing access to some global properties.
  * The specifics of setting up and running a simulation are handled by the
  * individual component class instances. */
 
@@ -1222,7 +1222,7 @@ const char *LAMMPS::non_pair_suffix() const
 }
 
 /* ----------------------------------------------------------------------
-   help message for command line options and styles present in executable
+   help message for command-line options and styles present in executable
 ------------------------------------------------------------------------- */
 
 void _noopt LAMMPS::help()
@@ -1233,7 +1233,7 @@ void _noopt LAMMPS::help()
   // if output is a console, use a pipe to a pager for paged output.
   // this will avoid the most important help text to rush past the
   // user. scrollback buffers are often not large enough. this is most
-  // beneficial to windows users, who are not used to command line.
+  // beneficial to windows users, who are not used to command-line.
 
   int use_pager = platform::is_console(fp);
 
@@ -1255,7 +1255,7 @@ void _noopt LAMMPS::help()
     }
   }
 
-  // general help message about command line and flags
+  // general help message about command-line and flags
 
   if (has_git_info()) {
     fprintf(fp,"\nLarge-scale Atomic/Molecular Massively Parallel Simulator - "
@@ -1266,7 +1266,7 @@ void _noopt LAMMPS::help()
   }
   fprintf(fp,
           "Usage example: %s -var t 300 -echo screen -in in.alloy\n\n"
-          "List of command line options supported by this LAMMPS executable:\n\n"
+          "List of command-line options supported by this LAMMPS executable:\n\n"
           "-echo none/screen/log/both  : echoing of input script (-e)\n"
           "-help                       : print this help message (-h)\n"
           "-in none/filename           : read input from file or stdin (default) (-i)\n"
@@ -1457,10 +1457,11 @@ void LAMMPS::print_config(FILE *fp)
   fmt::print(fp,"Compiler: {} with {}\nC++ standard: {}\n",
              platform::compiler_info(),platform::openmp_standard(),
              platform::cxx_standard());
+  fputs(Info::get_fmt_info().c_str(),fp);
 
   int major,minor;
   std::string infobuf = platform::mpi_info(major,minor);
-  fmt::print(fp,"MPI v{}.{}: {}\n\n",major,minor,infobuf);
+  fmt::print(fp,"\nMPI v{}.{}: {}\n\n",major,minor,infobuf);
 
   fmt::print(fp,"Accelerator configuration:\n\n{}\n",
              Info::get_accelerator_info());

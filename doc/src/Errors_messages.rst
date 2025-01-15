@@ -7774,7 +7774,7 @@ Doc page with :doc:`WARNING messages <Errors_warnings>`
 *Too few values in body section of molecule file*
    Self-explanatory.
 
-*Too many -pk arguments in command line*
+*Too many -pk arguments in command-line*
    The string formed by concatenating the arguments is too long.  Use a
    package command in the input script instead.
 

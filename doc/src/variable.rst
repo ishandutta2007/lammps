@@ -71,9 +71,9 @@ Syntax
          feature functions = is_available(category,feature), is_active(category,feature), is_defined(category,id)
          atom value = id[i], mass[i], type[i], mol[i], x[i], y[i], z[i], vx[i], vy[i], vz[i], fx[i], fy[i], fz[i], q[i]
          atom vector = id, mass, type, mol, radius, q, x, y, z, vx, vy, vz, fx, fy, fz
-         custom atom property = i_name, d_name, i_name[i], d_name[i], i2_name[i], d2_name[i], i2_name[i][j], d_name[i][j]
-         compute references = c_ID, c_ID[i], c_ID[i][j], C_ID, C_ID[i]
-         fix references = f_ID, f_ID[i], f_ID[i][j], F_ID, F_ID[i]
+         custom atom property = i_name, d_name, i_name[i], d_name[i], i2_name[i], d2_name[i], i2_name[i][j], d2_name[i][j]
+         compute references = c_ID, c_ID[i], c_ID[i][j], C_ID, C_ID[i], C_ID[i][j]
+         fix references = f_ID, f_ID[i], f_ID[i][j], F_ID, F_ID[i], F_ID[i][j]
          variable references = v_name, v_name[i]
          vector initialization = [1,3,7,10] (for *vector* variables only)
 

@@ -16,7 +16,7 @@ compiled alongside the code using it from the source code in
 ``fortran/lammps.f90`` *and* with the same compiler used to build the
 rest of the Fortran code that interfaces to LAMMPS.  When linking, you
 also need to :doc:`link to the LAMMPS library <Build_link>`.  A typical
-command line for a simple program using the Fortran interface would be:
+command for a simple program using the Fortran interface would be:
 
 .. code-block:: bash
 
@@ -91,12 +91,12 @@ function and triggered with the optional logical argument set to
      CALL lmp%close(.TRUE.)
    END PROGRAM testlib
 
-It is also possible to pass command line flags from Fortran to C/C++ and
+It is also possible to pass command-line flags from Fortran to C/C++ and
 thus make the resulting executable behave similarly to the standalone
 executable (it will ignore the `-in/-i` flag, though).  This allows
-using the command line to configure accelerator and suffix settings,
+using the command-line to configure accelerator and suffix settings,
 configure screen and logfile output, or to set index style variables
-from the command line and more.  Here is a correspondingly adapted
+from the command-line and more.  Here is a correspondingly adapted
 version of the previous example:
 
 .. code-block:: fortran
@@ -108,7 +108,7 @@ version of the previous example:
      CHARACTER(LEN=128), ALLOCATABLE :: command_args(:)
      INTEGER :: i, argc
 
-     ! copy command line flags to `command_args()`
+     ! copy command-line flags to `command_args()`
      argc = COMMAND_ARGUMENT_COUNT()
      ALLOCATE(command_args(0:argc))
      DO i=0, argc
@@ -321,6 +321,8 @@ of the contents of the :f:mod:`LIBLAMMPS` Fortran interface to LAMMPS.
    :ftype set_string_variable: subroutine
    :f set_internal_variable: :f:subr:`set_internal_variable`
    :ftype set_internal_variable: subroutine
+   :f eval: :f:func:`eval`
+   :ftype eval: function
    :f gather_atoms: :f:subr:`gather_atoms`
    :ftype gather_atoms: subroutine
    :f gather_atoms_concat: :f:subr:`gather_atoms_concat`
@@ -448,7 +450,7 @@ of the contents of the :f:mod:`LIBLAMMPS` Fortran interface to LAMMPS.
    compiled with MPI support, it will also initialize MPI, if it has
    not already been initialized before.
 
-   The *args* argument with the list of command line parameters is
+   The *args* argument with the list of command-line parameters is
    optional and so it the *comm* argument with the MPI communicator.
    If *comm* is not provided, ``MPI_COMM_WORLD`` is assumed. For
    more details please see the documentation of :cpp:func:`lammps_open`.

@@ -1073,7 +1073,7 @@ TEST(Utils, timespec2seconds_mmfraction)
 
 TEST(Utils, timespec2seconds_invalid)
 {
-    ASSERT_DOUBLE_EQ(utils::timespec2seconds("2:aa:45"), -1.0);
+    ASSERT_THROW(utils::timespec2seconds("2:aa:45"), TokenizerException);
 }
 
 TEST(Utils, date2num)

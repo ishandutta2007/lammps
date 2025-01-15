@@ -95,7 +95,7 @@ NEB::NEB(LAMMPS *lmp, double etol_in, double ftol_in, int n1steps_in, int n2step
 
 NEB::~NEB()
 {
-  MPI_Comm_free(&roots);
+  if (roots != MPI_COMM_NULL) MPI_Comm_free(&roots);
   memory->destroy(all);
   delete[] rdist;
   if (fp) {

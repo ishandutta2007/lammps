@@ -54,3 +54,26 @@ header of a data file (e.g. the number of atoms) is larger than the
 number of lines provided (e.g. in the corresponding Atoms section)
 and then LAMMPS will continue reading into the next section and that
 would have a completely different format.
+
+.. _err0003:
+
+Illegal variable command: expected X arguments but found Y
+----------------------------------------------------------
+
+This error indicates that there are the wrong number of arguments for a
+specific variable command, but a common reason for that is a variable
+expression that has whitespace but is not enclosed in single or double
+quotes.
+
+To explain, the LAMMPS input parser reads and processes lines.  The
+resulting line is broken down into "words".  Those are usually
+individual commands, labels, names, values separated by whitespace (a
+space or tab character).  For "words" that may contain whitespace, they
+have to be enclosed in single (') or double (") quotes.  The parser will
+then remove the outermost pair of quotes and then pass that string as
+"word" to the variable command.
+
+Thus missing quotes or accidental extra whitespace will lead to the
+error shown in the header because the unquoted whitespace will result
+in the text being broken into more "words", i.e. the variable expression
+being split.

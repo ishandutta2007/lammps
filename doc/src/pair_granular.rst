@@ -235,12 +235,15 @@ given by:
 
 .. math::
 
-   \eta_n = \alpha (m_{eff}k_n)^{1/2}
+   \eta_n = \alpha (m_{eff}k_{nd})^{1/2}
 
-For normal contact models based on material parameters, :math:`k_n = 4/3Ea`. This
-damping model is not compatible with cohesive normal models such as *JKR* or *DMT*.
-The parameter :math:`\alpha` is related to the restitution coefficient *e*
-according to:
+where :math:`k_{nd}` is an effective harmonic stiffness equal to the ratio of
+the normal force to the overlap. For example, :math:`k_{nd} = 4/3Ea` for a
+Hertz contact model based on material parameters with :math:`a` being
+the contact radius of :math:`\sqrt{\delta R}`. For Hooke, :math:`k_{nd}`
+is simply the spring constant or :math:`k_{n}`. This damping model is not
+compatible with cohesive normal models such as *JKR* or *DMT*. The parameter
+:math:`\alpha` is related to the restitution coefficient *e* according to:
 
 .. math::
 
@@ -251,25 +254,26 @@ of the normal contact model parameters should be between 0 and 1, but
 no error check is performed on this.
 
 The *coeff_restitution* model is useful when a specific normal coefficient of
-restitution :math:`e` is required. In these models, the normal coefficient of
-restitution :math:`e` is specified as an input. Following the approach of
-:ref:`(Brilliantov et al) <Brill1996>`, when using the *hooke* normal model,
-*coeff_restitution* calculates the damping coefficient as:
+restitution :math:`e` is required. It operates much like the *Tsuji* model
+but, the normal coefficient of restitution :math:`e` is specified as an input
+in place of the usual :math:`\eta_{n0}` value in the normal model. Following
+the approach of :ref:`(Brilliantov et al) <Brill1996>`, when using the *hooke*
+normal model, *coeff_restitution* then calculates the damping coefficient as:
 
 .. math::
 
-   \eta_n = \sqrt{\frac{4m_{eff}k_n}{1+\left( \frac{\pi}{\log(e)}\right)^2}} ,
+   \eta_n = \sqrt{\frac{4m_{eff}k_{nd}}{1+\left( \frac{\pi}{\log(e)}\right)^2}} ,
 
+where :math:`k_{nd}` is the same stiffness defined in the above *Tsuji* model.
 For any other normal model, e.g. the *hertz* and *hertz/material* models, the damping
 coefficient is:
 
 .. math::
 
-   \eta_n = -2\sqrt{\frac{5}{6}}\frac{\log(e)}{\sqrt{\pi^2+(\log(e))^2}}(R_{eff} \delta_{ij})^{\frac{1}{4}}\sqrt{\frac{3}{2}k_n m_{eff}} ,
+   \eta_n = -2\sqrt{\frac{5}{6}}\frac{\log(e)}{\sqrt{\pi^2+(\log(e))^2}}\sqrt{\frac{3}{2}k_{nd} m_{eff}} ,
 
-where :math:`k_n = \frac{4}{3} E_{eff}` for the *hertz/material* model. Since
-*coeff_restitution* accounts for the effective mass, effective radius, and
-pairwise overlaps (except when used with the *hooke* normal model) when calculating
+Since *coeff_restitution* accounts for the effective mass, effective radius,
+and pairwise overlaps (except when used with the *hooke* normal model) when calculating
 the damping coefficient, it accurately reproduces the specified coefficient of
 restitution for both monodisperse and polydisperse particle pairs.  This damping
 model is not compatible with cohesive normal models such as *JKR* or *DMT*.
@@ -738,10 +742,6 @@ and no global cutoff is appended to the *pair_style granular* command,
 then LAMMPS will use that cutoff for the specified atom type
 combination, and automatically set pairwise cutoffs for the remaining
 atom types.
-
-----------
-
-.. include:: accel_styles.rst
 
 ----------
 

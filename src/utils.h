@@ -21,6 +21,7 @@
 
 #include <mpi.h>
 
+#include <string>
 #include <vector>    // IWYU pragma: export
 
 namespace LAMMPS_NS {
@@ -58,7 +59,7 @@ namespace utils {
 
   void missing_cmd_args(const std::string &file, int line, const std::string &cmd, Error *error);
 
-  /* Internal function handling the argument list for logmesg(). */
+  /*! Internal function handling the argument list for logmesg(). */
 
   void fmtargs_logmesg(LAMMPS *lmp, fmt::string_view format, fmt::format_args args);
 
@@ -409,7 +410,8 @@ This functions adds the following case to :cpp:func:`utils::bounds() <LAMMPS_NS:
    *
    *  This function has the same arguments as expand_type() but returns an integer value */
 
-  int expand_type_int(const char *file, int line, const std::string &str, int mode, LAMMPS *lmp, bool verify = false);
+  int expand_type_int(const char *file, int line, const std::string &str, int mode, LAMMPS *lmp,
+                      bool verify = false);
 
   /*! Check grid reference for valid Compute or Fix which produces per-grid data
    *
@@ -424,12 +426,11 @@ This functions adds the following case to :cpp:func:`utils::bounds() <LAMMPS_NS:
    * \param ref     per-grid reference from input script, e.g. "c_10:grid:data[2]"
    * \param nevery  frequency at which caller will access fix for per-grid info,
    *                ignored when reference is to a compute
+   * \param id     ID of Compute or Fix
+   * \param igrid  which grid is referenced (0 to N-1)
+   * \param idata  which data on grid is referenced (0 to N-1)
+   * \param index  which column of data is referenced (0 for vec, 1-N for array)
    * \param lmp     pointer to top-level LAMMPS class instance
-   * \param verify  check bounds for interaction type
-   * \return id     ID of Compute or Fix
-   * \return igrid  which grid is referenced (0 to N-1)
-   * \return idata  which data on grid is referenced (0 to N-1)
-   * \return index  which column of data is referenced (0 for vec, 1-N for array)
    * \return        ArgINFO::COMPUTE or FIX or UNKNOWN or NONE */
 
   int check_grid_reference(char *errstr, char *ref, int nevery, char *&id, int &igrid, int &idata,
@@ -440,7 +441,10 @@ This functions adds the following case to :cpp:func:`utils::bounds() <LAMMPS_NS:
    * Format of grid ID reference = id:gname:dname.
    * Return vector with the 3 sub-strings.
    *
-   * \param name = complete grid ID
+   * \param file     name of source file for error message
+   * \param line     line number in source file for error message
+   * \param name     complete grid ID
+   * \param error    pointer to Error class
    * \return std::vector<std::string> containing the 3 sub-strings  */
 
   std::vector<std::string> parse_grid_id(const char *file, int line, const std::string &name,
@@ -505,7 +509,7 @@ This functions adds the following case to :cpp:func:`utils::bounds() <LAMMPS_NS:
 \verbatim embed:rst
 
 This will try to undo the effect from using the :doc:`suffix command <suffix>`
-or the *-suffix/-sf* command line flag and return correspondingly modified string.
+or the *-suffix/-sf* command-line flag and return correspondingly modified string.
 
 \endverbatim
    *
@@ -605,7 +609,7 @@ or the *-suffix/-sf* command line flag and return correspondingly modified strin
    * This can handle strings with single and double quotes, escaped quotes,
    * and escaped codes within quotes, but due to using an STL container and
    * STL strings is rather slow because of making copies. Designed for
-   * parsing command lines and similar text and not for time critical
+   * parsing command-lines and similar text and not for time critical
    * processing.  Use a tokenizer class if performance matters.
    *
 \verbatim embed:rst

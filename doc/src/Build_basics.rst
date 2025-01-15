@@ -160,7 +160,7 @@ with the OpenMP 3.1 semantics used in LAMMPS for maximal compatibility
 with compiler versions in use.  If compilation with OpenMP enabled fails
 because of your compiler requiring strict OpenMP 4.0 semantics, you can
 change the behavior by adding ``-D LAMMPS_OMP_COMPAT=4`` to the
-``LMP_INC`` variable in your makefile, or add it to the command line
+``LMP_INC`` variable in your makefile, or add it to the command-line flags
 while configuring with CMake.  LAMMPS will auto-detect a suitable setting
 for most GNU, Clang, and Intel compilers.
 
@@ -502,6 +502,8 @@ using CMake or Make.
                                       # chain.x, micelle2d.x, msi2lmp, phana,
                                       # stl_bin2txt
          -D BUILD_LAMMPS_GUI=value    # yes or no (default). Build LAMMPS-GUI
+         -D BUILD_WHAM=value          # yes (default). Download and build WHAM;
+                                      # only available for BUILD_LAMMPS_GUI=yes
 
       The generated binaries will also become part of the LAMMPS installation
       (see below).

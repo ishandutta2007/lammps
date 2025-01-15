@@ -2269,7 +2269,7 @@ void AtomVec::write_data_restricted_to_general()
   int nlocal = atom->nlocal;
 
   memory->create(x_hold,nlocal,3,"atomvec:x_hold");
-  if (nlocal) memcpy(&x_hold[0][0],&x[0][0],3*nlocal*sizeof(double));
+  if (nlocal) memcpy(&x_hold[0][0],&x[0][0],(sizeof(double)*3*nlocal)&MEMCPYMASK);
   for (int i = 0; i < nlocal; i++)
     domain->restricted_to_general_coords(x[i]);
 
@@ -2290,17 +2290,17 @@ void AtomVec::write_data_restricted_to_general()
 
         if (array == v) {
           memory->create(v_hold,nlocal,3,"atomvec:v_hold");
-          if (nlocal) memcpy(&v_hold[0][0],&v[0][0],3*nlocal*sizeof(double));
+          if (nlocal) memcpy(&v_hold[0][0],&v[0][0],(sizeof(double)*3*nlocal)&MEMCPYMASK);
           for (int i = 0; i < nlocal; i++)
             domain->restricted_to_general_vector(v[i]);
         } else if (array == omega) {
           memory->create(omega_hold,nlocal,3,"atomvec:omega_hold");
-          if (nlocal) memcpy(&omega_hold[0][0],&omega[0][0],3*nlocal*sizeof(double));
+          if (nlocal) memcpy(&omega_hold[0][0],&omega[0][0],(sizeof(double)*3*nlocal)&MEMCPYMASK);
           for (int i = 0; i < nlocal; i++)
             domain->restricted_to_general_vector(omega[i]);
         } else if (array == angmom) {
           memory->create(angmom_hold,nlocal,3,"atomvec:angmom_hold");
-          if (nlocal) memcpy(&angmom_hold[0][0],&angmom[0][0],3*nlocal*sizeof(double));
+          if (nlocal) memcpy(&angmom_hold[0][0],&angmom[0][0],(sizeof(double)*3*nlocal)&MEMCPYMASK);
           for (int i = 0; i < nlocal; i++)
             domain->restricted_to_general_vector(angmom[i]);
         }
@@ -2321,7 +2321,7 @@ void AtomVec::write_data_restore_restricted()
   int nlocal = atom->nlocal;
 
   if (x_hold) {
-    memcpy(&x[0][0],&x_hold[0][0],3*nlocal*sizeof(double));
+    memcpy(&x[0][0],&x_hold[0][0],(sizeof(double)*3*nlocal)&MEMCPYMASK);
     memory->destroy(x_hold);
     x_hold = nullptr;
   }
@@ -2330,19 +2330,19 @@ void AtomVec::write_data_restore_restricted()
   // no other write_data Velocities fields are Nx3 double arrays
 
   if (v_hold) {
-    memcpy(&v[0][0],&v_hold[0][0],3*nlocal*sizeof(double));
+    memcpy(&v[0][0],&v_hold[0][0],(sizeof(double)*3*nlocal)&MEMCPYMASK);
     memory->destroy(v_hold);
     v_hold = nullptr;
   }
 
   if (omega_hold) {
-    memcpy(&atom->omega[0][0],&omega_hold[0][0],3*nlocal*sizeof(double));
+    memcpy(&atom->omega[0][0],&omega_hold[0][0],(sizeof(double)*3*nlocal)&MEMCPYMASK);
     memory->destroy(omega_hold);
     omega_hold = nullptr;
   }
 
   if (angmom_hold) {
-    memcpy(&atom->angmom[0][0],&angmom_hold[0][0],3*nlocal*sizeof(double));
+    memcpy(&atom->angmom[0][0],&angmom_hold[0][0],(sizeof(double)*3*nlocal)&MEMCPYMASK);
     memory->destroy(angmom_hold);
     angmom_hold = nullptr;
   }

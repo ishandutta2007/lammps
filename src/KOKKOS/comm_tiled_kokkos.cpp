@@ -417,42 +417,58 @@ void CommTiledKokkos::borders()
 
 /* ----------------------------------------------------------------------
    forward communication invoked by a Pair
-   nsize used only to set recv buffer limit
+   size/nsize used only to set recv buffer limit
+   size = 0 (default) -> use comm_forward from Fix
+   size > 0 -> Fix passes max size per atom
+   the latter is only useful if Fix does several comm modes,
+     some are smaller than max stored in its comm_forward
 ------------------------------------------------------------------------- */
 
-void CommTiledKokkos::forward_comm(Pair *pair)
+void CommTiledKokkos::forward_comm(Pair *pair, int size)
 {
-  CommTiled::forward_comm(pair);
+  CommTiled::forward_comm(pair, size);
 }
 
 /* ----------------------------------------------------------------------
    reverse communication invoked by a Pair
-   nsize used only to set recv buffer limit
+   size/nsize used only to set recv buffer limit
+   size = 0 (default) -> use comm_reverse from Pair
+   size > 0 -> Pair passes max size per atom
+   the latter is only useful if Pair does several comm modes,
+     some are smaller than max stored in its comm_reverse
 ------------------------------------------------------------------------- */
 
-void CommTiledKokkos::reverse_comm(Pair *pair)
+void CommTiledKokkos::reverse_comm(Pair *pair, int size)
 {
-  CommTiled::reverse_comm(pair);
+  CommTiled::reverse_comm(pair, size);
 }
 
 /* ----------------------------------------------------------------------
    forward communication invoked by a Bond
-   nsize used only to set recv buffer limit
+   size/nsize used only to set recv buffer limit
+   size = 0 (default) -> use comm_forward from Bond
+   size > 0 -> Bond passes max size per atom
+   the latter is only useful if Bond does several comm modes,
+     some are smaller than max stored in its comm_forward
 ------------------------------------------------------------------------- */
 
-void CommTiledKokkos::forward_comm(Bond *bond)
+void CommTiledKokkos::forward_comm(Bond *bond, int size)
 {
-  CommTiled::forward_comm(bond);
+  CommTiled::forward_comm(bond, size);
 }
 
 /* ----------------------------------------------------------------------
    reverse communication invoked by a Bond
-   nsize used only to set recv buffer limit
+   size/nsize used only to set recv buffer limit
+   size = 0 (default) -> use comm_reverse from Bond
+   size > 0 -> Bond passes max size per atom
+   the latter is only useful if Bond does several comm modes,
+     some are smaller than max stored in its comm_reverse
 ------------------------------------------------------------------------- */
 
-void CommTiledKokkos::reverse_comm(Bond *bond)
+void CommTiledKokkos::reverse_comm(Bond *bond, int size)
 {
-  CommTiled::reverse_comm(bond);
+  CommTiled::reverse_comm(bond, size);
 }
 
 /* ----------------------------------------------------------------------
@@ -466,21 +482,21 @@ void CommTiledKokkos::reverse_comm(Bond *bond)
 
 void CommTiledKokkos::forward_comm(Fix *fix, int size)
 {
-  CommTiled::forward_comm(fix,size);
+  CommTiled::forward_comm(fix, size);
 }
 
 /* ----------------------------------------------------------------------
    reverse communication invoked by a Fix
    size/nsize used only to set recv buffer limit
-   size = 0 (default) -> use comm_forward from Fix
+   size = 0 (default) -> use comm_reverse from Fix
    size > 0 -> Fix passes max size per atom
    the latter is only useful if Fix does several comm modes,
-     some are smaller than max stored in its comm_forward
+     some are smaller than max stored in its comm_reverse
 ------------------------------------------------------------------------- */
 
 void CommTiledKokkos::reverse_comm(Fix *fix, int size)
 {
-  CommTiled::reverse_comm(fix,size);
+  CommTiled::reverse_comm(fix, size);
 }
 
 /* ----------------------------------------------------------------------
@@ -497,42 +513,58 @@ void CommTiledKokkos::reverse_comm_variable(Fix *fix)
 
 /* ----------------------------------------------------------------------
    forward communication invoked by a Compute
-   nsize used only to set recv buffer limit
+   size/nsize used only to set recv buffer limit
+   size = 0 (default) -> use comm_forward from Compute
+   size > 0 -> Compute passes max size per atom
+   the latter is only useful if Compute does several comm modes,
+     some are smaller than max stored in its comm_forward
 ------------------------------------------------------------------------- */
 
-void CommTiledKokkos::forward_comm(Compute *compute)
+void CommTiledKokkos::forward_comm(Compute *compute, int size)
 {
-  CommTiled::forward_comm(compute);
+  CommTiled::forward_comm(compute, size);
 }
 
 /* ----------------------------------------------------------------------
    reverse communication invoked by a Compute
-   nsize used only to set recv buffer limit
+   size/nsize used only to set recv buffer limit
+   size = 0 (default) -> use comm_reverse from Compute
+   size > 0 -> Compute passes max size per atom
+   the latter is only useful if Compute does several comm modes,
+     some are smaller than max stored in its comm_reverse
 ------------------------------------------------------------------------- */
 
-void CommTiledKokkos::reverse_comm(Compute *compute)
+void CommTiledKokkos::reverse_comm(Compute *compute, int size)
 {
-  CommTiled::reverse_comm(compute);
+  CommTiled::reverse_comm(compute, size);
 }
 
 /* ----------------------------------------------------------------------
    forward communication invoked by a Dump
-   nsize used only to set recv buffer limit
+   size/nsize used only to set recv buffer limit
+   size = 0 (default) -> use comm_forward from Dump
+   size > 0 -> Dump passes max size per atom
+   the latter is only useful if Dump does several comm modes,
+     some are smaller than max stored in its comm_forward
 ------------------------------------------------------------------------- */
 
-void CommTiledKokkos::forward_comm(Dump *dump)
+void CommTiledKokkos::forward_comm(Dump *dump, int size)
 {
-  CommTiled::forward_comm(dump);
+  CommTiled::forward_comm(dump, size);
 }
 
 /* ----------------------------------------------------------------------
    reverse communication invoked by a Dump
-   nsize used only to set recv buffer limit
+   size/nsize used only to set recv buffer limit
+   size = 0 (default) -> use comm_reverse from Dump
+   size > 0 -> Dump passes max size per atom
+   the latter is only useful if Dump does several comm modes,
+     some are smaller than max stored in its comm_reverse
 ------------------------------------------------------------------------- */
 
-void CommTiledKokkos::reverse_comm(Dump *dump)
+void CommTiledKokkos::reverse_comm(Dump *dump, int size)
 {
-  CommTiled::reverse_comm(dump);
+  CommTiled::reverse_comm(dump, size);
 }
 
 /* ----------------------------------------------------------------------

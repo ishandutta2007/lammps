@@ -405,7 +405,7 @@ TEST_F(SimpleCommandsTest, Units)
     END_HIDE_OUTPUT();
     ASSERT_THAT(lmp->update->unit_style, StrEq("lj"));
 
-    TEST_FAILURE(".*ERROR: Illegal units command.*", command("units unknown"););
+    TEST_FAILURE(".*ERROR: Unknown units style unknown.*", command("units unknown"););
 }
 
 #if defined(LMP_PLUGIN)

@@ -1744,13 +1744,9 @@ double utils::timespec2seconds(const std::string &timespec)
 
   ValueTokenizer values(timespec, ":");
 
-  try {
-    for (i = 0; i < 3; i++) {
-      if (!values.has_next()) break;
-      vals[i] = values.next_double();
-    }
-  } catch (TokenizerException &) {
-    return -1.0;
+  for (i = 0; i < 3; i++) {
+    if (!values.has_next()) break;
+    vals[i] = values.next_double();
   }
 
   if (i == 3)

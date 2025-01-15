@@ -269,8 +269,8 @@ void Info::command(int narg, char **arg)
   if (out == nullptr) return;
 
   fputs("\nInfo-Info-Info-Info-Info-Info-Info-Info-Info-Info-Info\n",out);
-  std::time_t now = std::time(nullptr);
-  fmt::print(out,"Printed on {:%a %b %d %H:%M:%S %Y}\n", fmt::localtime(now));
+  std::tm now = fmt::localtime(std::time(nullptr));
+  fmt::print(out,"Printed on {}", std::asctime(&now));
 
   if (flags & CONFIG) {
     fmt::print(out,"\nLAMMPS version: {} / {}\n", lmp->version, lmp->num_ver);
@@ -290,6 +290,7 @@ void Info::command(int narg, char **arg)
 
     fmt::print(out,"\nCompiler: {} with {}\nC++ standard: {}\n",
                platform::compiler_info(),platform::openmp_standard(),platform::cxx_standard());
+    fputs(get_fmt_info().c_str(), out);
 
     fputs("\nActive compile time flags:\n\n",out);
     if (has_gzip_support()) fputs("-DLAMMPS_GZIP\n",out);
@@ -1357,6 +1358,18 @@ std::string Info::get_fft_info()
 #endif
 #endif
   return fft_info;
+}
+
+/* ---------------------------------------------------------------------- */
+
+static constexpr int fmt_ver_major = FMT_VERSION / 10000;
+static constexpr int fmt_ver_minor = (FMT_VERSION % 10000) / 100;
+static constexpr int fmt_ver_patch = FMT_VERSION % 100;
+
+std::string Info::get_fmt_info()
+{
+  return fmt::format("Embedded fmt library version: {}.{}.{}\n",
+                     fmt_ver_major, fmt_ver_minor, fmt_ver_patch);
 }
 
 /* ---------------------------------------------------------------------- */

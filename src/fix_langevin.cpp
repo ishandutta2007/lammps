@@ -223,6 +223,16 @@ int FixLangevin::setmask()
 
 void FixLangevin::init()
 {
+  if (id_temp) {
+    temperature = modify->get_compute_by_id(id_temp);
+    if (!temperature) {
+      error->all(FLERR, "Temperature compute ID {} for fix {} does not exist", id_temp, style);
+    } else {
+      if (temperature->tempflag == 0)
+        error->all(FLERR, "Compute ID {} for fix {} does not compute temperature", id_temp, style);
+    }
+  }
+
   if (gjfflag) {
     if (t_period * 2 == update->dt)
       error->all(FLERR, "Fix langevin gjf cannot have t_period equal to dt/2");

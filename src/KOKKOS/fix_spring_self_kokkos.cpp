@@ -79,6 +79,9 @@ void FixSpringSelfKokkos<DeviceType>::init()
 {
   FixSpringSelf::init();
 
+  if (kstyle != CONSTANT)
+    error->all(FLERR, "Fix spring/self/kk does not support variable spring constants (yet)");
+
   if (utils::strmatch(update->integrate_style,"^respa"))
     error->all(FLERR,"Cannot (yet) use respa with Kokkos");
 }

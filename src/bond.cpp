@@ -388,7 +388,7 @@ void Bond::write_file(int narg, char **arg)
                      utils::current_date());
       fp = fopen(table_file.c_str(), "w");
       if (fp)
-        fmt::print(fp, "# DATE: {} UNITS: {} Created by bond_write\n", utils::current_date(),
+        utils::print(fp, "# DATE: {} UNITS: {} Created by bond_write\n", utils::current_date(),
                    update->unit_style);
     }
     if (fp == nullptr)

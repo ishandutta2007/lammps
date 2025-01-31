@@ -87,7 +87,8 @@ static constexpr char YAML[] = "step temp ke pe ebond eangle edihed eimp evdwl e
 #define FORMAT_FLOAT_YAML_DEFAULT "%.15g"
 #define FORMAT_INT_YAML_DEFAULT "%d"
 
-#define FORMAT_MULTI_HEADER "------------ Step {:14} ----- CPU = {:12.7g} (sec) -------------"
+static constexpr char FORMAT_MULTI_HEADER[] =
+  "------------ Step {:14} ----- CPU = {:12.7g} (sec) -------------";
 
 enum { SCALAR, VECTOR, ARRAY };
 
@@ -100,8 +101,8 @@ static char fmtbuf[512];
 /* ---------------------------------------------------------------------- */
 
 Thermo::Thermo(LAMMPS *_lmp, int narg, char **arg) :
-    Pointers(_lmp), style(nullptr), vtype(nullptr), field2index(nullptr), argindex1(nullptr),
-    argindex2(nullptr), temperature(nullptr), pressure(nullptr), pe(nullptr)
+    Pointers(_lmp), style(nullptr), vtype(nullptr), cache_mutex(nullptr), field2index(nullptr),
+    argindex1(nullptr), argindex2(nullptr), temperature(nullptr), pressure(nullptr), pe(nullptr)
 {
   style = utils::strdup(arg[0]);
 
@@ -208,6 +209,7 @@ void Thermo::init()
   ValueTokenizer *format_line = nullptr;
   if (format_line_user.size()) format_line = new ValueTokenizer(format_line_user);
 
+  lock_cache();
   field_data.clear();
   field_data.resize(nfield);
   std::string format_this, format_line_user_def;
@@ -277,6 +279,7 @@ void Thermo::init()
         format[i] += fmt::format("{:<8} = {} ", keyword[i], format_this);
     }
   }
+  unlock_cache();
 
   // chop off trailing blank or add closing bracket if needed and then add newline
   if (lineflag == ONELINE)
@@ -320,6 +323,9 @@ void Thermo::init()
   if (index_press_scalar >= 0) pressure = computes[index_press_scalar];
   if (index_press_vector >= 0) pressure = computes[index_press_vector];
   if (index_pe >= 0) pe = computes[index_pe];
+
+  // create mutex to protect access to cached thermo data
+  cache_mutex = new std::mutex;
 }
 
 /* ----------------------------------------------------------------------
@@ -366,9 +372,17 @@ void Thermo::header()
 
 /* ---------------------------------------------------------------------- */
 
+// called at the end of a run from Finish class
+
 void Thermo::footer()
 {
-  if (lineflag == YAMLLINE) utils::logmesg(lmp, "...\n");
+  if (comm->me == 0) {
+    if (lineflag == YAMLLINE) utils::logmesg(lmp, "...\n");
+  }
+
+  // no more locking for cached thermo data access needed
+  delete cache_mutex;
+  cache_mutex = nullptr;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -422,6 +436,7 @@ void Thermo::compute(int flag)
   }
 
   // add each thermo value to line with its specific format
+  lock_cache();
   field_data.clear();
   field_data.resize(nfield);
 
@@ -441,6 +456,7 @@ void Thermo::compute(int flag)
       field_data[ifield] = bivalue;
     }
   }
+  unlock_cache();
 
   // print line to screen and logfile
 
@@ -579,7 +595,8 @@ void Thermo::modify_params(int narg, char **arg)
       if (iarg + 2 > narg) error->all(FLERR, "Illegal thermo_modify command");
       triclinic_general = utils::logical(FLERR, arg[iarg + 1], false, lmp);
       if (triclinic_general && !domain->triclinic_general)
-        error->all(FLERR,"Thermo_modify triclinic/general cannot be used "
+        error->all(FLERR,
+                   "Thermo_modify triclinic/general cannot be used "
                    "if simulation box is not general triclinic");
       iarg += 2;
 
@@ -1564,6 +1581,26 @@ int Thermo::evaluate_keyword(const std::string &word, double *answer)
 
   *answer = dvalue;
   return 0;
+}
+
+/* ---------------------------------------------------------------------- */
+
+// lock cache for current thermo data
+
+void Thermo::lock_cache()
+{
+  // no locking outside of a run
+  if (!cache_mutex) return;
+  cache_mutex->lock();
+}
+
+// unlock cache for current thermo data
+
+void Thermo::unlock_cache()
+{
+  // no locking outside of a run
+  if (!cache_mutex) return;
+  cache_mutex->unlock();
 }
 
 /* ----------------------------------------------------------------------

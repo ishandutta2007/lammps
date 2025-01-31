@@ -42,19 +42,20 @@ enum{DISCARD,KEEP};
 
 static constexpr int OFFSET = 16384;
 
+// clang-format on
 /* ---------------------------------------------------------------------- */
 
 FixAveGrid::FixAveGrid(LAMMPS *lmp, int narg, char **arg) :
-  Fix(lmp, narg, arg), id_bias(nullptr), which(nullptr), argindex(nullptr), ids(nullptr),
-  value2index(nullptr), value2grid(nullptr), value2data(nullptr), grid2d(nullptr), grid3d(nullptr),
-  grid_buf1(nullptr), grid_buf2(nullptr), grid_output(nullptr), grid_sample(nullptr),
-  grid_nfreq(nullptr), grid_running(nullptr), grid_window(nullptr), grid2d_previous(nullptr),
-  grid3d_previous(nullptr), grid_sample_previous(nullptr), grid_nfreq_previous(nullptr),
-  grid_running_previous(nullptr), grid_window_previous(nullptr), bin(nullptr), skip(nullptr),
-  vresult(nullptr)
+    Fix(lmp, narg, arg), id_bias(nullptr), which(nullptr), argindex(nullptr), ids(nullptr),
+    value2index(nullptr), value2grid(nullptr), value2data(nullptr), grid2d(nullptr),
+    grid3d(nullptr), grid_buf1(nullptr), grid_buf2(nullptr), grid_output(nullptr),
+    grid_sample(nullptr), grid_nfreq(nullptr), grid_running(nullptr), grid_window(nullptr),
+    grid2d_previous(nullptr), grid3d_previous(nullptr), grid_sample_previous(nullptr),
+    grid_nfreq_previous(nullptr), grid_running_previous(nullptr), grid_window_previous(nullptr),
+    bin(nullptr), skip(nullptr), vresult(nullptr)
 {
-  if (narg < 10) utils::missing_cmd_args(FLERR,"fix ave/grid", error);
-
+  if (narg < 10) utils::missing_cmd_args(FLERR, "fix ave/grid", error);
+  // clang-format off
   pergrid_flag = 1;
   nevery = utils::inumeric(FLERR,arg[3],false,lmp);
   nrepeat = utils::inumeric(FLERR,arg[4],false,lmp);
@@ -193,7 +194,6 @@ FixAveGrid::FixAveGrid(LAMMPS *lmp, int narg, char **arg) :
   aveflag = ONE;
   nwindow = 0;
   biasflag = 0;
-  id_bias = nullptr;
   adof = domain->dimension;
   cdof = 0.0;
 
@@ -231,6 +231,7 @@ FixAveGrid::FixAveGrid(LAMMPS *lmp, int narg, char **arg) :
       if (iarg+2 > nargnew)
         error->all(FLERR,"Illegal fix ave/grid command");
       biasflag = 1;
+      delete[] id_bias;
       id_bias = utils::strdup(arg[iarg+1]);
       iarg += 2;
 
@@ -347,11 +348,7 @@ FixAveGrid::FixAveGrid(LAMMPS *lmp, int narg, char **arg) :
   // vresult for per-atom variable evaluation
 
   maxatom = 0;
-  bin = nullptr;
-  skip = nullptr;
-
   maxvar = 0;
-  vresult = nullptr;
 
   // nvalid = next step on which end_of_step does something
   // add nvalid to all computes that store invocation times
@@ -372,6 +369,7 @@ FixAveGrid::~FixAveGrid()
   delete[] argindex;
   for (int m = 0; m < nvalues; m++) delete[] ids[m];
   delete[] ids;
+  delete[] id_bias;
   delete[] value2index;
   delete[] value2grid;
   delete[] value2data;

@@ -237,6 +237,7 @@ accelerated styles exist.
 * :doc:`dt/reset <fix_dt_reset>` - reset the timestep based on velocity, forces
 * :doc:`edpd/source <fix_dpd_source>` - add heat source to eDPD simulations
 * :doc:`efield <fix_efield>` - impose electric field on system
+* :doc:`efield/lepton <fix_efield_lepton>` - impose electric field on system using a Lepton expression for the potential
 * :doc:`efield/tip4p <fix_efield>` - impose electric field on system with TIP4P molecules
 * :doc:`ehex <fix_ehex>` - enhanced heat exchange algorithm
 * :doc:`electrode/conp <fix_electrode>` - impose electric potential
@@ -357,6 +358,7 @@ accelerated styles exist.
 * :doc:`python/move <fix_python_move>` - move particles using a Python function during a simulation run
 * :doc:`qbmsst <fix_qbmsst>` - quantum bath multi-scale shock technique time integrator
 * :doc:`qeq/comb <fix_qeq_comb>` - charge equilibration for COMB potential
+* :doc:`qeq/ctip <fix_qeq>` - charge equilibration for CTIP potential
 * :doc:`qeq/dynamic <fix_qeq>` - charge equilibration via dynamic method
 * :doc:`qeq/fire <fix_qeq>` - charge equilibration via FIRE minimizer
 * :doc:`qeq/point <fix_qeq>` - charge equilibration via point method
@@ -365,6 +367,7 @@ accelerated styles exist.
 * :doc:`qeq/slater <fix_qeq>` - charge equilibration via Slater method
 * :doc:`qmmm <fix_qmmm>` - functionality to enable a quantum mechanics/molecular mechanics coupling
 * :doc:`qtb <fix_qtb>` - implement quantum thermal bath scheme
+* :doc:`qtpie/reaxff <fix_qtpie_reaxff>` - apply QTPIE charge equilibration
 * :doc:`rattle <fix_shake>` - RATTLE constraints on bonds and/or angles
 * :doc:`reaxff/bonds <fix_reaxff_bonds>` - write out ReaxFF bond information
 * :doc:`reaxff/species <fix_reaxff_species>` - write out ReaxFF molecule information

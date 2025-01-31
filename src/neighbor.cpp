@@ -139,6 +139,7 @@ pairclass(nullptr), pairnames(nullptr), pairmasks(nullptr)
   ago = -1;
 
   cutneighmax = 0.0;
+  cutneighmin = BIG;
   cutneighsq = nullptr;
   cutneighghostsq = nullptr;
   cuttype = nullptr;
@@ -1099,8 +1100,10 @@ int Neighbor::init_pair()
 
   NeighList *ptr;
 
+  // use counter to avoid getting stuck
   int done = 0;
-  while (!done) {
+  int count = 0;
+  while (!done && (count < 100)) {
     done = 1;
     for (i = 0; i < npair_perpetual; i++) {
       for (k = 0; k < 3; k++) {
@@ -1109,8 +1112,9 @@ int Neighbor::init_pair()
         if (k == 1) ptr = lists[plist[i]]->listskip;
         if (k == 2) ptr = lists[plist[i]]->listfull;
         if (ptr == nullptr) continue;
-        for (m = 0; m < nrequest; m++)
+        for (m = 0; m < nrequest; m++) {
           if (ptr == lists[m]) break;
+        }
         for (j = 0; j < npair_perpetual; j++)
           if (m == plist[j]) break;
         if (j < i) continue;
@@ -1122,7 +1126,11 @@ int Neighbor::init_pair()
       }
       if (!done) break;
     }
+    ++count;
   }
+  if (count == 100)
+    error->all(FLERR, "Failed to reorder neighbor lists to satisfy constraints - "
+               "Contact the LAMMPS developers for assistance");
 
   // debug output
 
@@ -1185,8 +1193,8 @@ void Neighbor::morph_unique()
   for (int i = 0; i < nrequest; i++) {
     irq = requests[i];
 
-    // if cut flag set by requestor and cutoff is different than default,
-    //   set unique flag, otherwise unset cut flag
+    // if cut flag set by requestor and cutoff is larger than minimum for default,
+    //   and the list is not a skip list, set unique flag; otherwise unset cut flag
     // this forces Pair,Stencil,Bin styles to be instantiated separately
     // also add skin to cutoff of perpetual lists
 
@@ -1194,7 +1202,7 @@ void Neighbor::morph_unique()
       if (!irq->occasional)
         irq->cutoff += skin;
 
-      if (irq->cutoff != cutneighmax) {
+      if ((irq->cutoff > cutneighmin) && !irq->skip) {
         irq->unique = 1;
       } else {
         irq->cut = 0;
@@ -1509,6 +1517,10 @@ void Neighbor::morph_copy_trim()
       // other list is already copied from this one
 
       if (jrq->copy && jrq->copylist == i) continue;
+
+      // cannot copy or trim if some pair-wise cutoffs are too small
+
+      if (irq->cut && !jrq->cut && (irq->cutoff > cutneighmin)) continue;
 
       // trim a list with longer cutoff
 

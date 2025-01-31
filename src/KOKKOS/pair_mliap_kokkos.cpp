@@ -240,6 +240,7 @@ void PairMLIAPKokkos<DeviceType>::coeff(int narg, char **arg) {
       if (strcmp(elemname,descriptor->elements[jelem]) == 0)
         break;
 
+    //printf(">>> nelements: %d\n", descriptor->nelements);
     if (jelem < descriptor->nelements)
       map[i] = jelem;
     else if (strcmp(elemname,"NULL") == 0) map[i] = -1;
@@ -302,7 +303,7 @@ void PairMLIAPKokkos<DeviceType>::e_tally(MLIAPData* data)
     auto d_iatoms = k_data->k_iatoms.template view<DeviceType>();
     auto d_eatoms = k_data->k_eatoms.template view<DeviceType>();
     auto d_eatom = k_eatom.template view<DeviceType>();
-    Kokkos::parallel_for(data->nlistatoms, KOKKOS_LAMBDA (int ii) {
+    Kokkos::parallel_for(Kokkos::RangePolicy<DeviceType>(0,data->nlistatoms), KOKKOS_LAMBDA (int ii) {
       d_eatom(d_iatoms(ii)) = d_eatoms(ii);
     });
     k_eatom.modify<DeviceType>();

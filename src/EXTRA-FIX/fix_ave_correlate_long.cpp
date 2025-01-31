@@ -489,7 +489,7 @@ void FixAveCorrelateLong::end_of_step()
   if (fp && comm->me == 0) {
     clearerr(fp);
     if (overwrite) (void) platform::fseek(fp,filepos);
-    fmt::print(fp,"# Timestep: {}\n", ntimestep);
+    utils::print(fp,"# Timestep: {}\n", ntimestep);
     for (unsigned int i=0; i < npcorr; ++i) {
       fprintf(fp, "%lg ", t[i]*update->dt*nevery);
       for (int j=0; j < npair; ++j) {

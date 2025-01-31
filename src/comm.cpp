@@ -75,6 +75,7 @@ Comm::Comm(LAMMPS *lmp) : Pointers(lmp)
   maxexchange = maxexchange_atom = maxexchange_fix = 0;
   maxexchange_fix_dynamic = 0;
   bufextra = BUFEXTRA;
+  bufextra_max = bufextra;
 
   grid2proc = nullptr;
   xsplit = ysplit = zsplit = nullptr;
@@ -227,13 +228,13 @@ void Comm::init()
   }
 
   for (const auto &compute : modify->get_compute_list()) {
-    maxforward = MAX(maxforward,compute->comm_forward);
-    maxreverse = MAX(maxreverse,compute->comm_reverse);
+    maxforward = MAX(maxforward, compute->comm_forward);
+    maxreverse = MAX(maxreverse, compute->comm_reverse);
   }
 
   for (const auto &dump: output->get_dump_list()) {
-    maxforward = MAX(maxforward,dump->comm_forward);
-    maxreverse = MAX(maxreverse,dump->comm_reverse);
+    maxforward = MAX(maxforward, dump->comm_forward);
+    maxreverse = MAX(maxreverse, dump->comm_reverse);
   }
 
   if (force->newton == 0) maxreverse = 0;

@@ -163,7 +163,7 @@ After everything is done, add the files to the branch and commit them:
    *git rm*, *git mv* for adding, removing, renaming individual files,
    respectively, and then *git commit* to finalize the commit.
    Carefully check all pending changes with *git status* before
-   committing them.  If you find doing this on the command line too
+   committing them.  If you find doing this on the command-line too
    tedious, consider using a GUI, for example the one included in git
    distributions written in Tk, i.e. use *git gui* (on some Linux
    distributions it may be required to install an additional package to

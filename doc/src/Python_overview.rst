@@ -56,7 +56,7 @@ Below is an example output for Python version 3.8.5.
 
 ---------
 
-LAMMPS can work together with Python in three ways.  First, Python can
+LAMMPS can work together with Python in two ways.  First, Python can
 wrap LAMMPS through the its :doc:`library interface <Library>`, so
 that a Python script can create one or more instances of LAMMPS and
 launch one or more simulations.  In Python terms, this is referred to as
@@ -67,22 +67,7 @@ launch one or more simulations.  In Python terms, this is referred to as
 
    Launching LAMMPS via Python
 
-
-Second, the lower-level Python interface in the :py:class:`lammps Python
-class <lammps.lammps>` can be used indirectly through the provided
-:py:class:`PyLammps <lammps.PyLammps>` and :py:class:`IPyLammps
-<lammps.IPyLammps>` wrapper classes, also written in Python.  These
-wrappers try to simplify the usage of LAMMPS in Python by providing a
-more object-based interface to common LAMMPS functionality.  They also
-reduce the amount of code necessary to parameterize LAMMPS scripts
-through Python and make variables and computes directly accessible.
-
-.. figure:: JPG/pylammps-invoke-lammps.png
-   :figclass: align-center
-
-   Using the PyLammps / IPyLammps wrappers
-
-Third, LAMMPS can use the Python interpreter, so that a LAMMPS input
+Second, LAMMPS can use the Python interpreter, so that a LAMMPS input
 script or styles can invoke Python code directly, and pass information
 back-and-forth between the input script and Python functions you write.
 This Python code can also call back to LAMMPS to query or change its

@@ -1219,7 +1219,7 @@ void Balance::dumpout(bigint tstep)
   double *boxlo = domain->boxlo;
   double *boxhi = domain->boxhi;
 
-  fmt::print(fp,"ITEM: TIMESTEP\n{}\n",tstep);
+  utils::print(fp,"ITEM: TIMESTEP\n{}\n",tstep);
   fprintf(fp,"ITEM: NUMBER OF NODES\n");
   if (dimension == 2) fprintf(fp,"%d\n",4*nprocs);
   else fprintf(fp,"%d\n",8*nprocs);
@@ -1294,7 +1294,7 @@ void Balance::dumpout(bigint tstep)
 
   // write out one square/cube per processor for 2d/3d
 
-  fmt::print(fp,"ITEM: TIMESTEP\n{}\n",tstep);
+  utils::print(fp,"ITEM: TIMESTEP\n{}\n",tstep);
   if (dimension == 2) fprintf(fp,"ITEM: NUMBER OF SQUARES\n");
   else fprintf(fp,"ITEM: NUMBER OF CUBES\n");
   fprintf(fp,"%d\n",nprocs);
@@ -1339,13 +1339,13 @@ void Balance::debug_shift_output(int idim, int m, int np, double *split)
   fprintf(stderr,"Dimension %s, Iteration %d\n",dim,m);
 
   fprintf(stderr,"  Count:");
-  for (i = 0; i <= np; i++) fmt::print(stderr," {}",count[i]);
+  for (i = 0; i <= np; i++) utils::print(stderr," {}",count[i]);
   fprintf(stderr,"\n");
   fprintf(stderr,"  Sum:");
-  for (i = 0; i <= np; i++) fmt::print(stderr," {}",sum[i]);
+  for (i = 0; i <= np; i++) utils::print(stderr," {}",sum[i]);
   fprintf(stderr,"\n");
   fprintf(stderr,"  Target:");
-  for (i = 0; i <= np; i++) fmt::print(stderr," {}",target[i]);
+  for (i = 0; i <= np; i++) utils::print(stderr," {}",target[i]);
   fprintf(stderr,"\n");
   fprintf(stderr,"  Actual cut:");
   for (i = 0; i <= np; i++)
@@ -1358,13 +1358,13 @@ void Balance::debug_shift_output(int idim, int m, int np, double *split)
   for (i = 0; i <= np; i++) fprintf(stderr," %g",lo[i]);
   fprintf(stderr,"\n");
   fprintf(stderr,"  Low-sum:");
-  for (i = 0; i <= np; i++) fmt::print(stderr," {}",losum[i]);
+  for (i = 0; i <= np; i++) utils::print(stderr," {}",losum[i]);
   fprintf(stderr,"\n");
   fprintf(stderr,"  Hi:");
   for (i = 0; i <= np; i++) fprintf(stderr," %g",hi[i]);
   fprintf(stderr,"\n");
   fprintf(stderr,"  Hi-sum:");
-  for (i = 0; i <= np; i++) fmt::print(stderr," {}",hisum[i]);
+  for (i = 0; i <= np; i++) utils::print(stderr," {}",hisum[i]);
   fprintf(stderr,"\n");
   fprintf(stderr,"  Delta:");
   for (i = 0; i < np; i++) fprintf(stderr," %g",split[i+1]-split[i]);

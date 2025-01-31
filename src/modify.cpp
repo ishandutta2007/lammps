@@ -825,16 +825,16 @@ Fix *Modify::add_fix(int narg, char **arg, int trysuffix)
 
   // clang-format off
   const char *exceptions[] =
-    {"GPU", "OMP", "INTEL", "property/atom", "cmap", "cmap3", "rx",
-     "deprecated", "STORE/KIM", "amoeba/pitorsion", "amoeba/bitorsion",
-     nullptr};
+    {"GPU", "OMP", "INTEL", "property/atom", "cmap", "cmap3", "rx", "deprecated", "STORE/KIM",
+     "amoeba/pitorsion", "amoeba/bitorsion", "DUMMY", nullptr};
   // clang-format on
 
   if (domain->box_exist == 0) {
     int m;
     for (m = 0; exceptions[m] != nullptr; m++)
       if (strcmp(arg[2], exceptions[m]) == 0) break;
-    if (exceptions[m] == nullptr) error->all(FLERR, "Fix command before simulation box is defined");
+    if (exceptions[m] == nullptr)
+      error->all(FLERR, "Fix {} command before simulation box is defined", arg[2]);
   }
 
   // check group ID

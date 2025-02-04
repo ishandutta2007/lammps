@@ -225,7 +225,7 @@ void PairKIM::compute(int eflag, int vflag)
                              KIM_COMPUTE_ARGUMENT_NAME_particleContributing,
                              kim_particleContributing);
     if (kimerror)
-      error->all(FLERR,"Unable to set KIM particle species codes and/or contributing");
+      error->one(FLERR,"Unable to set KIM particle species codes and/or contributing");
   }
 
   // kim_particleSpecies = KIM atom species for each LAMMPS atom
@@ -250,7 +250,7 @@ void PairKIM::compute(int eflag, int vflag)
 
   // compute via KIM model
   int kimerror = KIM_Model_Compute(pkim, pargs);
-  if (kimerror) error->all(FLERR, "KIM Compute returned error {}", kimerror);
+  if (kimerror) error->one(FLERR, "KIM Compute returned error {}", kimerror);
 
   // scale results for fix adapt if needed
   if (scale_extracted) {
@@ -814,7 +814,7 @@ void PairKIM::kim_free()
   if (kim_init_ok) {
     int kimerror = KIM_Model_ComputeArgumentsDestroy(pkim, &pargs);
     if (kimerror)
-      error->all(FLERR,"Unable to destroy Compute Arguments Object");
+      error->one(FLERR,"Unable to destroy Compute Arguments Object");
 
     KIM_Model_Destroy(&pkim);
 

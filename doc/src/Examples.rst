@@ -146,6 +146,8 @@ Lowercase directories
 +-------------+------------------------------------------------------------------+
 | streitz     | use of Streitz/Mintmire potential with charge equilibration      |
 +-------------+------------------------------------------------------------------+
+| stress_vcm  | removing binned rigid body motion from binned stress profile     |
++-------------+------------------------------------------------------------------+
 | tad         | temperature-accelerated dynamics of vacancy diffusion in bulk Si |
 +-------------+------------------------------------------------------------------+
 | threebody   | regression test input for a variety of manybody potentials       |

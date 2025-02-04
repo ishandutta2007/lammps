@@ -16,6 +16,7 @@
 
 #include "angle.h"
 #include "atom.h"
+#include "atom_masks.h"
 #include "bond.h"
 #include "dihedral.h"
 #include "domain.h"
@@ -132,6 +133,11 @@ ComputePressure::ComputePressure(LAMMPS *lmp, int narg, char **arg) :
   vector = new double[size_vector];
   nvirial = 0;
   vptr = nullptr;
+
+  // KOKKOS
+
+  datamask_read = EMPTY_MASK;
+  datamask_modify = EMPTY_MASK;
 }
 
 /* ---------------------------------------------------------------------- */

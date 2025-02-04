@@ -46,9 +46,6 @@ static constexpr double SMALL = 0.00001;
 static constexpr double EPS_HOC = 1.0e-7;
 static constexpr FFT_SCALAR ZEROF = 0.0;
 
-enum { REVERSE_RHO };
-enum { FORWARD_IK, FORWARD_IK_PERATOM };
-
 /* ---------------------------------------------------------------------- */
 
 template<class DeviceType>
@@ -1149,7 +1146,8 @@ void PPPMKokkos<DeviceType>::particle_map()
 
   k_flag.template modify<DeviceType>();
   k_flag.template sync<LMPHostType>();
-  if (k_flag.h_view()) error->one(FLERR,"Out of range atoms - cannot compute PPPM");
+  if (k_flag.h_view())
+    error->one(FLERR,"Out of range atoms - cannot compute PPPM" + utils::errorurl(4));
 }
 
 template<class DeviceType>

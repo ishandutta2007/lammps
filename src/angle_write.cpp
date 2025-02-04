@@ -106,7 +106,7 @@ void AngleWrite::command(int narg, char **arg)
                      utils::current_date());
       fp = fopen(table_file.c_str(), "w");
       if (fp)
-        fmt::print(fp, "# DATE: {} UNITS: {} Created by angle_write\n", utils::current_date(),
+        utils::print(fp, "# DATE: {} UNITS: {} Created by angle_write\n", utils::current_date(),
                    update->unit_style);
     }
     if (fp == nullptr)
@@ -173,9 +173,9 @@ void AngleWrite::command(int narg, char **arg)
 
     // evaluate energy and force at each of N distances
 
-    fmt::print(fp, "# Angle potential {} for angle type {}: i,theta,energy,force\n",
+    utils::print(fp, "# Angle potential {} for angle type {}: i,theta,energy,force\n",
                force->angle_style, atype);
-    fmt::print(fp, "\n{}\nN {} EQ {:.15g}\n\n", keyword, n, theta0);
+    utils::print(fp, "\n{}\nN {} EQ {:.15g}\n\n", keyword, n, theta0);
 
 #define GET_ENERGY(myphi, mytheta) \
   theta = mytheta;                 \

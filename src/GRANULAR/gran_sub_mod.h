@@ -46,6 +46,8 @@ namespace Granular_NS {
 
     GranularModel *gm;
 
+    int nsvector, index_svector;
+
    protected:
     int allocated;
 

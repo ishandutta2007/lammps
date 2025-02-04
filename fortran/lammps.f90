@@ -100,6 +100,7 @@ MODULE LIBLAMMPS
   CONTAINS
     PROCEDURE :: close                  => lmp_close
     PROCEDURE :: error                  => lmp_error
+    PROCEDURE :: expand                 => lmp_expand
     PROCEDURE :: file                   => lmp_file
     PROCEDURE :: command                => lmp_command
     PROCEDURE :: commands_list          => lmp_commands_list
@@ -125,6 +126,17 @@ MODULE LIBLAMMPS
     PROCEDURE :: set_variable           => lmp_set_variable
     PROCEDURE :: set_string_variable    => lmp_set_string_variable
     PROCEDURE :: set_internal_variable  => lmp_set_internal_variable
+    PROCEDURE :: eval                   => lmp_eval
+
+    PROCEDURE :: clearstep_compute      => lmp_clearstep_compute
+    PROCEDURE, PRIVATE :: lmp_addstep_compute_smallint
+    PROCEDURE, PRIVATE :: lmp_addstep_compute_bigint
+    GENERIC :: addstep_compute          => lmp_addstep_compute_smallint, lmp_addstep_compute_bigint
+    PROCEDURE, PRIVATE :: lmp_addstep_compute_all_smallint
+    PROCEDURE, PRIVATE :: lmp_addstep_compute_all_bigint
+    GENERIC :: addstep_compute_all      => lmp_addstep_compute_all_smallint, &
+                                           lmp_addstep_compute_all_bigint
+
     PROCEDURE, PRIVATE :: lmp_gather_atoms_int
     PROCEDURE, PRIVATE :: lmp_gather_atoms_double
     GENERIC   :: gather_atoms           => lmp_gather_atoms_int, &
@@ -410,6 +422,14 @@ MODULE LIBLAMMPS
       TYPE(c_ptr), VALUE :: error_text
     END SUBROUTINE lammps_error
 
+    FUNCTION lammps_expand(handle, line) BIND(C)
+      IMPORT :: c_ptr
+      IMPLICIT NONE
+      TYPE(c_ptr), INTENT(IN), VALUE :: handle
+      TYPE(c_ptr), INTENT(IN), VALUE :: line
+      TYPE(c_ptr) :: lammps_expand
+    END FUNCTION lammps_expand
+
     SUBROUTINE lammps_file(handle, filename) BIND(C)
       IMPORT :: c_ptr
       IMPLICIT NONE
@@ -609,7 +629,32 @@ MODULE LIBLAMMPS
       INTEGER(c_int) :: lammps_set_internal_variable
     END FUNCTION lammps_set_internal_variable
 
-    SUBROUTINE lammps_gather_atoms(handle, name, type, count, data) BIND(C)
+    FUNCTION lammps_eval(handle, expr) BIND(C)
+      IMPORT :: c_ptr, c_double
+      IMPLICIT NONE
+      TYPE(c_ptr), VALUE :: handle, expr
+      REAL(c_double) :: lammps_eval
+    END FUNCTION lammps_eval
+
+    SUBROUTINE lammps_clearstep_compute(handle) BIND(C)
+      IMPORT :: c_ptr
+      IMPLICIT NONE
+      TYPE(c_ptr), VALUE :: handle
+    END SUBROUTINE lammps_clearstep_compute
+
+    SUBROUTINE lammps_addstep_compute(handle, step) BIND(C)
+      IMPORT :: c_ptr
+      IMPLICIT NONE
+      TYPE(c_ptr), VALUE :: handle, step
+    END SUBROUTINE lammps_addstep_compute
+
+    SUBROUTINE lammps_addstep_compute_all(handle, step) BIND(C)
+      IMPORT :: c_ptr
+      IMPLICIT NONE
+      TYPE(c_ptr), VALUE :: handle, step
+    END SUBROUTINE lammps_addstep_compute_all
+
+    SUBROUTINE lammps_gather_atoms(handle, name, TYPE, count, DATA) BIND(C)
       IMPORT :: c_int, c_ptr
       IMPLICIT NONE
       TYPE(c_ptr), VALUE :: handle, name, data
@@ -1107,10 +1152,24 @@ CONTAINS
     CALL lammps_free(str)
   END SUBROUTINE lmp_error
 
+  ! equivalent function to lammps_expand()
+  FUNCTION lmp_expand(self, line)
+    CLASS(lammps), INTENT(IN) :: self
+    CHARACTER(len=*), INTENT(IN) :: line
+    TYPE(c_ptr) :: str, res
+    CHARACTER(len=:), ALLOCATABLE :: lmp_expand
+
+    str = f2c_string(line)
+    res = lammps_expand(self%handle, str)
+    CALL lammps_free(str)
+    lmp_expand = c2f_string(res)
+    CALL lammps_free(res)
+  END FUNCTION lmp_expand
+
   ! equivalent function to lammps_file()
   SUBROUTINE lmp_file(self, filename)
     CLASS(lammps), INTENT(IN) :: self
-    CHARACTER(len=*) :: filename
+    CHARACTER(len=*), INTENT(IN) :: filename
     TYPE(c_ptr) :: str
 
     str = f2c_string(filename)
@@ -1121,7 +1180,7 @@ CONTAINS
   ! equivalent function to lammps_command()
   SUBROUTINE lmp_command(self, cmd)
     CLASS(lammps), INTENT(IN) :: self
-    CHARACTER(len=*) :: cmd
+    CHARACTER(len=*), INTENT(IN) :: cmd
     TYPE(c_ptr) :: str
 
     str = f2c_string(cmd)
@@ -1155,7 +1214,7 @@ CONTAINS
   ! equivalent function to lammps_commands_string()
   SUBROUTINE lmp_commands_string(self, str)
     CLASS(lammps), INTENT(IN) :: self
-    CHARACTER(len=*) :: str
+    CHARACTER(len=*), INTENT(IN) :: str
     TYPE(c_ptr) :: tmp
 
     tmp = f2c_string(str)
@@ -1173,7 +1232,7 @@ CONTAINS
   ! equivalent function to lammps_get_thermo
   REAL(c_double) FUNCTION lmp_get_thermo(self,name)
     CLASS(lammps), INTENT(IN) :: self
-    CHARACTER(LEN=*) :: name
+    CHARACTER(LEN=*), INTENT(IN) :: name
     TYPE(c_ptr) :: Cname
 
     Cname = f2c_string(name)
@@ -1185,7 +1244,7 @@ CONTAINS
   FUNCTION lmp_last_thermo(self,what,index) RESULT(thermo_data)
     CLASS(lammps), INTENT(IN), TARGET :: self
     CHARACTER(LEN=*), INTENT(IN) :: what
-    INTEGER :: index
+    INTEGER, INTENT(IN) :: index
     INTEGER(c_int) :: idx
     TYPE(lammps_data) :: thermo_data, type_data
     INTEGER(c_int) :: datatype
@@ -1789,7 +1848,7 @@ CONTAINS
   SUBROUTINE lmp_set_internal_variable(self, name, val)
     CLASS(lammps), INTENT(IN) :: self
     CHARACTER(LEN=*), INTENT(IN) :: name
-    REAL(KIND=c_double), INTENT(IN) :: val
+    REAL(c_double), INTENT(IN) :: val
     INTEGER :: err
     TYPE(c_ptr) :: Cname
 
@@ -1802,6 +1861,92 @@ CONTAINS
         // '" [Fortran/set_variable]')
     END IF
   END SUBROUTINE lmp_set_internal_variable
+
+  ! equivalent function to lammps_eval
+  FUNCTION lmp_eval(self, expr)
+    CLASS(lammps), INTENT(IN) :: self
+    CHARACTER(LEN=*), INTENT(IN) :: expr
+    REAL(c_double) :: lmp_eval
+    TYPE(c_ptr) :: Cexpr
+
+    Cexpr = f2c_string(expr)
+    lmp_eval = lammps_eval(self%handle, Cexpr)
+    CALL lammps_free(Cexpr)
+  END FUNCTION lmp_eval
+
+  ! equivalent subroutine to lammps_clearstep_compute
+  SUBROUTINE lmp_clearstep_compute(self)
+    CLASS(lammps), INTENT(IN) :: self
+    CALL lammps_clearstep_compute(self%handle)
+  END SUBROUTINE lmp_clearstep_compute
+
+  ! equivalent subroutine to lammps_addstep_compute
+  SUBROUTINE lmp_addstep_compute_bigint(self, nextstep)
+    CLASS(lammps), INTENT(IN) :: self
+    INTEGER(kind=8), INTENT(IN) :: nextstep
+    INTEGER(c_int), TARGET :: smallstep
+    INTEGER(c_int64_t), TARGET :: bigstep
+    TYPE(c_ptr) :: ptrstep
+    IF (SIZE_BIGINT == 4_c_int) THEN
+        smallstep = INT(nextstep,kind=c_int)
+        ptrstep = C_LOC(smallstep)
+    ELSE
+        bigstep = nextstep
+        ptrstep = C_LOC(bigstep)
+    END IF
+    CALL lammps_addstep_compute(self%handle, ptrstep)
+  END SUBROUTINE lmp_addstep_compute_bigint
+
+  ! equivalent subroutine to lammps_addstep_compute
+  SUBROUTINE lmp_addstep_compute_smallint(self, nextstep)
+    CLASS(lammps), INTENT(IN) :: self
+    INTEGER(kind=4), INTENT(IN) :: nextstep
+    INTEGER(c_int), TARGET :: smallstep
+    INTEGER(c_int64_t), TARGET :: bigstep
+    TYPE(c_ptr) :: ptrstep
+    IF (SIZE_BIGINT == 4_c_int) THEN
+        smallstep = nextstep
+        ptrstep = C_LOC(smallstep)
+    ELSE
+        bigstep = nextstep
+        ptrstep = C_LOC(bigstep)
+    END IF
+    CALL lammps_addstep_compute(self%handle, ptrstep)
+  END SUBROUTINE lmp_addstep_compute_smallint
+
+  ! equivalent subroutine to lammps_addstep_compute_all
+  SUBROUTINE lmp_addstep_compute_all_bigint(self, nextstep)
+    CLASS(lammps), INTENT(IN) :: self
+    INTEGER(kind=8), INTENT(IN) :: nextstep
+    INTEGER(c_int), TARGET :: smallstep
+    INTEGER(c_int64_t), TARGET :: bigstep
+    TYPE(c_ptr) :: ptrstep
+    IF (SIZE_BIGINT == 4_c_int) THEN
+        smallstep = INT(nextstep,kind=c_int)
+        ptrstep = C_LOC(smallstep)
+    ELSE
+        bigstep = nextstep
+        ptrstep = C_LOC(bigstep)
+    END IF
+    CALL lammps_addstep_compute_all(self%handle, ptrstep)
+  END SUBROUTINE lmp_addstep_compute_all_bigint
+
+  ! equivalent subroutine to lammps_addstep_compute_all
+  SUBROUTINE lmp_addstep_compute_all_smallint(self, nextstep)
+    CLASS(lammps), INTENT(IN) :: self
+    INTEGER(kind=4), INTENT(IN) :: nextstep
+    INTEGER(c_int), TARGET :: smallstep
+    INTEGER(c_int64_t), TARGET :: bigstep
+    TYPE(c_ptr) :: ptrstep
+    IF (SIZE_BIGINT == 4_c_int) THEN
+        smallstep = nextstep
+        ptrstep = C_LOC(smallstep)
+    ELSE
+        bigstep = nextstep
+        ptrstep = C_LOC(bigstep)
+    END IF
+    CALL lammps_addstep_compute_all(self%handle, ptrstep)
+  END SUBROUTINE lmp_addstep_compute_all_smallint
 
   ! equivalent function to lammps_gather_atoms (for integers)
   SUBROUTINE lmp_gather_atoms_int(self, name, count, data)

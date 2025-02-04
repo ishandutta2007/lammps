@@ -27,6 +27,7 @@
 #include "force.h"
 #include "gran_sub_mod.h"
 #include "math_extra.h"
+#include "memory.h"
 
 #include "style_gran_sub_mod.h"    // IWYU pragma: keep
 
@@ -64,6 +65,10 @@ GranularModel::GranularModel(LAMMPS *lmp) : Pointers(lmp)
   twisting_model = nullptr;
   heat_model = nullptr;
 
+  calculate_svector = 0;
+  nsvector = 0;
+  svector = nullptr;
+
   for (int i = 0; i < NSUBMODELS; i++) sub_models[i] = nullptr;
   transfer_history_factor = nullptr;
 
@@ -100,6 +105,7 @@ GranularModel::~GranularModel()
   delete[] gran_sub_mod_class;
   delete[] gran_sub_mod_names;
   delete[] gran_sub_mod_types;
+  delete[] svector;
 
   for (int i = 0; i < NSUBMODELS; i++) delete sub_models[i];
 }
@@ -243,7 +249,12 @@ void GranularModel::init()
 
   // Must have valid normal, damping, and tangential models
   if (normal_model->name == "none") error->all(FLERR, "Must specify normal granular model");
-  if (damping_model->name == "none") error->all(FLERR, "Must specify damping granular model");
+  if (normal_model->name == "mdr") {
+     if (damping_model->name != "none")
+       error->all(FLERR, "MDR require 'none' damping model. To damp, specify a coefficient of restitution < 1.");
+  } else {
+    if (damping_model->name == "none") error->all(FLERR, "Must specify damping granular model");
+  }
   if (tangential_model->name == "none") error->all(FLERR, "Must specify tangential granular model");
 
   // Twisting, rolling, and heat are optional
@@ -293,6 +304,21 @@ void GranularModel::init()
   }
 
   for (int i = 0; i < NSUBMODELS; i++) sub_models[i]->init();
+
+  nsvector = 0;
+  int index_svector = 0;
+  for (int i = 0; i < NSUBMODELS; i++) {
+    if (sub_models[i]->nsvector != 0) {
+      sub_models[i]->index_svector = index_svector;
+      nsvector += sub_models[i]->nsvector;
+      index_svector += sub_models[i]->nsvector;
+    }
+  }
+
+  if (nsvector != 0) {
+    delete[] svector;
+    svector = new double[nsvector];
+  }
 }
 
 /* ---------------------------------------------------------------------- */
@@ -493,9 +519,8 @@ void GranularModel::calculate_forces()
     if (contact_type == PAIR) sub3(torquesj, tortwist, torquesj);
   }
 
-  if (heat_defined) {
+  if (heat_defined)
     dq = heat_model->calculate_heat();
-  }
 }
 
 /* ----------------------------------------------------------------------

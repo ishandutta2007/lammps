@@ -81,6 +81,7 @@ liblammpsplugin_t *liblammpsplugin_load(const char *lib)
   ADDSYM(python_finalize);
 
   ADDSYM(error);
+  ADDSYM(expand);
 
   ADDSYM(file);
   ADDSYM(command);
@@ -116,6 +117,10 @@ liblammpsplugin_t *liblammpsplugin_load(const char *lib)
   ADDSYM(set_string_variable);
   ADDSYM(set_internal_variable);
   ADDSYM(variable_info);
+  ADDSYM(eval);
+  ADDSYM(clearstep_compute);
+  ADDSYM(addstep_compute);
+  ADDSYM(addstep_compute_all);
 
   ADDSYM(gather_atoms);
   ADDSYM(gather_atoms_concat);

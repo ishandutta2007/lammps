@@ -3,6 +3,8 @@
 region command
 ==============
 
+Accelerator Variants: *block/kk*, *sphere/kk*
+
 Syntax
 """"""
 
@@ -44,6 +46,7 @@ Syntax
          xy = distance to tilt y in x direction (distance units)
          xz = distance to tilt z in x direction (distance units)
          yz = distance to tilt z in y direction (distance units)
+           xlo,xhi,ylo,yhi,zlo,zhi,xy,xz,yz can be a variable (see below)
        *sphere* args = x y z radius
          x,y,z = center of sphere (distance units)
          radius = radius of sphere (distance units)
@@ -74,7 +77,7 @@ Syntax
          Rx,Ry,Rz = axis of rotation vector
        *open* value = integer from 1-6 corresponding to face index (see below)
 
-* accelerated styles (with same args) = *block/kk*
+* accelerated styles (with same args) = *block/kk, sphere/kk*
 
 Examples
 """"""""
@@ -209,7 +212,7 @@ and *ellipsoid* the x-, y-, and z- coordinates of the center of the
 sphere/ellipsoid can be specified as an equal-style variable.  And for
 style *cylinder* the two center positions c1 and c2 for the location of
 the cylinder axes can be specified as a equal-style variable.  For style
-*cone* all properties can be defined via equal-style variables.  For
+*cone* and *prism* all properties can be defined via equal-style variables.  For
 style *plane* the point can be defined via equal-style variables.
 
 If the value is a variable, it should be specified as v_name, where
@@ -401,9 +404,9 @@ sub-regions can be defined with the *open* keyword.
 
 .. note::
 
-  Currently, only *block* style regions are supported by Kokkos.  The
+  Currently, only *block* and *sphere* style regions are supported by KOKKOS.  The
   code using the region (such as a fix or compute) must also be
-  supported by Kokkos or no acceleration will occur.
+  supported by KOKKOS or no acceleration will occur.
 
 ----------
 

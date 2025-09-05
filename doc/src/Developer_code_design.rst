@@ -27,11 +27,13 @@ then, we have begun to replace C-style constructs with equivalent C++
 functionality.  This was taken either from the C++ standard library or
 implemented as custom classes or functions.  The goal is to improve
 readability of the code and to increase code reuse through abstraction
-of commonly used functionality.
+of commonly used functionality. In summer 2025, after the 22 July 2025
+stable release, the minimum required C++ language standard was raised to
+C++17.
 
 .. note::
 
-   Please note that as of spring 2023 there is still a sizable chunk of
+   Please note that as of summer 2025 there is still a sizable chunk of
    legacy code in LAMMPS that has not yet been refactored to reflect
    these style conventions in full.  LAMMPS has a large code base and
    many contributors.  There is also a hierarchy of precedence in which

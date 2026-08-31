@@ -434,8 +434,8 @@ elseif(GPU_API STREQUAL "HIP")
 
   if(HIP_USE_DEVICE_SORT)
     if(HIP_PLATFORM STREQUAL "amd")
-      # newer version of ROCm (5.1+) require c++14 for rocprim
-      set_property(TARGET gpu PROPERTY CXX_STANDARD 14)
+      # ROCm 5.1+ requires c++14 for rocprim; ROCm 6+/7+ rocprim requires c++17
+      set_property(TARGET gpu PROPERTY CXX_STANDARD 17)
     endif()
     # add hipCUB
     find_package(hipcub REQUIRED)
@@ -521,5 +521,6 @@ endif()
 
 set_target_properties(gpu PROPERTIES OUTPUT_NAME lammps_gpu${LAMMPS_MACHINE})
 target_compile_definitions(gpu PRIVATE -DLAMMPS_${LAMMPS_SIZES})
+target_include_directories(gpu PRIVATE ${GPU_SOURCES_DIR} ${LAMMPS_LIB_SOURCE_DIR}/gpu/include)
 target_sources(lammps PRIVATE ${GPU_SOURCES})
-target_include_directories(lammps PRIVATE ${GPU_SOURCES_DIR})
+target_include_directories(lammps PRIVATE ${GPU_SOURCES_DIR} ${LAMMPS_LIB_SOURCE_DIR}/gpu/include)
